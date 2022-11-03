@@ -80,27 +80,11 @@ public class FloodIORequestsJava {
                         List<String> buttons = session.getList("order_selected");
                         Map<Integer, String> map = IntStream.range(0, numInt.size()).boxed()
                                 .collect(Collectors.toMap(numInt::get, buttons::get));
-                        System.out.println(Arrays.asList(map));
                         int max = Collections.max(map.keySet());
-                        System.out.println("max: " + max);
                         String button = map.get(max);
-                        System.out.println("button: " + button);
-                        System.out.println("Session before:");
-                        System.out.println(Arrays.asList(session.asScala().attributes()));
                         session.set("num", max);
                         session.set("order", button);
-                        System.out.println("Session after:");
-                        System.out.println(Arrays.asList(session.asScala().attributes()));
-                        System.out.println("num from session: " + session.get("num"));
-                        System.out.println("order from session: " + session.get("order"));
                         return session.set("num", max).set("order", button);
-                    })
-                    .exec(session -> {
-                        System.out.println("Session next step:");
-                        System.out.println(Arrays.asList(session.asScala().attributes()));
-                        System.out.println("num from session next step: " + session.get("num"));
-                        System.out.println("order from session next step: " + session.get("order"));
-                        return session;
                     })
                     .pause(1);
 
