@@ -2,7 +2,10 @@ package carrier.requestsjava;
 
 import io.gatling.javaapi.core.ChainBuilder;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -11,22 +14,23 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
 public class FloodIORequestsJava {
+    public static Map<String, String> headers_5 = new HashMap<>();
 
-    public static HashMap<String, String> headers_5 =  new HashMap<String, String>() {{
-        put("Accept-Encoding", "gzip, deflate");
-        put("Pragma", "no-cache");
-        put("Homst", "challengers.flood.io");
-        put("Origin", "https://challengers.flood.io");
-        put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        put("X-Requested-With", "XMLHttpRequest");
-        put("Upgrade-Insecure-Requests", "1");
-    }};;
+    static {
+        headers_5.put("Accept-Encoding", "gzip, deflate");
+        headers_5.put("Pragma", "no-cache");
+        headers_5.put("Host", "challengers.flood.io");
+        headers_5.put("Origin", "https://challengers.flood.io");
+        headers_5.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        headers_5.put("X-Requested-With", "XMLHttpRequest");
+        headers_5.put("Upgrade-Insecure-Requests", "1");
+    }
 
-    public  static ChainBuilder dataJSON = exec(http("Step5_GET_Code")
+    public static ChainBuilder dataJSON = exec(http("Step5_GET_Code")
             .get("/code")
             .check(jsonPath("$.code").saveAs("dataJSON")));
 
-    public static ChainBuilder Step1GET = exec(http("Step1_GET")
+    public static ChainBuilder Step1GET = exec(http("NEW_Step1_GET")
             .get("/")
             .headers(headers_5)
             .check(status().is(200))
@@ -35,7 +39,7 @@ public class FloodIORequestsJava {
             .check(regex("step_number\".*?value=\"(.*?)\"").find().saveAs("stepNumber")))
             .pause(1);
 
-    public static ChainBuilder Step1POST = exec(http("Step1_POST")
+    public static ChainBuilder Step1POST = exec(http("NEW_Step1_POST")
             .post("/start")
             .headers(headers_5)
             .formParam("utf8", "✓")
@@ -45,7 +49,7 @@ public class FloodIORequestsJava {
             .formParam("commit", "Start"))
             .pause(1);
 
-    public static ChainBuilder Step2GET = exec(http("Step2_GET")
+    public static ChainBuilder Step2GET = exec(http("NEW_Step2_GET")
             .get("/step/2")
             .headers(headers_5)
             .check(regex("step_id.+?value=\"(.+?)\"").find().saveAs("challenger2"))
@@ -64,10 +68,8 @@ public class FloodIORequestsJava {
                     .formParam("commit", "Next"))
                     .pause(1);
 
-
-
     public static ChainBuilder Step3GET =
-            exec(http("Step3_GET")
+            exec(http("NEW_Step3_GET")
                     .get("/step/3")
                     .headers(headers_5)
                     .check(regex("step_id.+?value=\"(.+?)\"").find().saveAs("challenger3"))
@@ -82,13 +84,11 @@ public class FloodIORequestsJava {
                                 .collect(Collectors.toMap(numInt::get, buttons::get));
                         int max = Collections.max(map.keySet());
                         String button = map.get(max);
-                        session.set("num", max);
-                        session.set("order", button);
                         return session.set("num", max).set("order", button);
                     })
                     .pause(1);
 
-    public static ChainBuilder Step3POST = exec(http("Step3_POST")
+    public static ChainBuilder Step3POST = exec(http("NEW_Step3_POST")
             .post("/start")
             .headers(headers_5)
             .formParam("utf8", "✓")
@@ -100,7 +100,7 @@ public class FloodIORequestsJava {
             .formParam("commit", "Next"))
             .pause(1);
 
-    public static ChainBuilder Step4GET = exec(http("Step4_GET")
+    public static ChainBuilder Step4GET = exec(http("NEW_Step4_GET")
             .get("/step/4")
             .headers(headers_5)
             .check(regex("step_id.+?value=\"(.+?)\"").find().saveAs("challenger4"))
@@ -123,7 +123,7 @@ public class FloodIORequestsJava {
             })
             .pause(1);
 
-    public static ChainBuilder Step4POST = exec(http("Step4_POST")
+    public static ChainBuilder Step4POST = exec(http("NEW_Step4_POST")
             .post("/start")
             .headers(headers_5)
             .formParam("utf8", "✓")
@@ -142,7 +142,7 @@ public class FloodIORequestsJava {
             .formParam("${orderName_10}", "${orderValue}")
             .formParam("commit", "Next"));
 
-    public static ChainBuilder Step5GET = exec(http("Step5_GET")
+    public static ChainBuilder Step5GET = exec(http("NEW_Step5_GET")
             .get("/step/5")
             .headers(headers_5)
             .check(regex("step_id.+?value=\"(.+?)\"").find().saveAs("challenger5"))
@@ -158,12 +158,12 @@ public class FloodIORequestsJava {
             .formParam("challenger[one_time_token]", "${dataJSON}")
             .formParam("commit", "Next"));
 
-    public static ChainBuilder FinalStep = exec(http("Final_Step")
+    public static ChainBuilder FinalStep = exec(http("NEW_Final_Step")
             .get("/done")
             .headers(headers_5)
             .check(regex("You're Done!")));
 
-    public static ChainBuilder failedFinalStep = exec(http("Final_Step")
+    public static ChainBuilder failedFinalStep = exec(http("NEW_Final_Step")
             .get("/done")
             .headers(headers_5)
             .queryParam("milestone", "1")
