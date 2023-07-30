@@ -13,13 +13,16 @@ public class FloodIoJava extends Simulation {
 
  //   String environment = "https://challengers.flood.io";
     String environment = System.getProperty("apiUrl");
-
- //   int ramp_users = 5;
-    int ramp_users = Integer.getInteger("ramp_users");
+    //String environment = System.getProperty("environment");
+    //String environment = System.getenv("demo_environment");
+    //String environment = "https://training.flooded.io";
+    //   int ramp_users = 5;
+    int ramp_users = Integer.getInteger("ramp_users", 5);
  //   int ramp_duration = 120;
-    int ramp_duration = Integer.getInteger("ramp_duration");
+    int ramp_duration = Integer.getInteger("ramp_duration", 30);
  //   int duration = 120;
-    int duration = Integer.getInteger("duration");
+    int duration = Integer.getInteger("duration", 60);
+
 
     HttpProtocolBuilder webProtocol = http
             .baseUrl(environment)
@@ -27,7 +30,7 @@ public class FloodIoJava extends Simulation {
             .disableFollowRedirect();
 
     ScenarioBuilder flood_io = scenario("flood_io")
-            .tryMax(10).on(
+            .during(duration).on(
                     exec(Step1GET)
                             .exec(Step1POST)
                             .exec(Step2GET)
@@ -40,8 +43,7 @@ public class FloodIoJava extends Simulation {
                             .exec(Step5GET)
                             .exec(Step5POST)
                             .randomSwitch()
-                            .on(Choice.withWeight(60.0, FinalStep), Choice.withWeight(40.0, failedFinalStep))
-                            .exitHereIfFailed());
+                            .on(Choice.withWeight(60.0, FinalStep), Choice.withWeight(40.0, failedFinalStep)));
 
 
     {
