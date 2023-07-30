@@ -11,9 +11,9 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class FloodIoMvn extends Simulation {
 
-    //String environment = System.getenv("environment");
+    String environment = System.getProperty("environment");
     //String environment = System.getenv("demo_environment");
-    String environment = "https://training.flooded.io";
+    //String environment = "https://training.flooded.io";
     //   int ramp_users = 5;
     int ramp_users = Integer.getInteger("ramp_users", 5);
  //   int ramp_duration = 120;
@@ -28,7 +28,7 @@ public class FloodIoMvn extends Simulation {
             .disableFollowRedirect();
 
     ScenarioBuilder flood_io = scenario("flood_io")
-            .tryMax(10).on(
+            .during(duration).on(
                     exec(Step1GET)
                             .exec(Step1POST)
                             .exec(Step2GET)
