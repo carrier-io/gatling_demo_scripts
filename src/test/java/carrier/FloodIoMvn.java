@@ -11,15 +11,15 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class FloodIoMvn extends Simulation {
 
-    String environment = System.getenv("environment");
+    //String environment = System.getenv("environment");
     //String environment = System.getenv("demo_environment");
-    //String environment = "https://training.flooded.io";
+    String environment = "https://training.flooded.io";
     //   int ramp_users = 5;
-    int ramp_users = Integer.getInteger("ramp_users");
+    int ramp_users = Integer.getInteger("ramp_users", 5);
  //   int ramp_duration = 120;
-    int ramp_duration = Integer.getInteger("ramp_duration");
+    int ramp_duration = Integer.getInteger("ramp_duration", 30);
  //   int duration = 120;
-    int duration = Integer.getInteger("duration");
+    int duration = Integer.getInteger("duration", 60);
 
 
     HttpProtocolBuilder webProtocol = http
