@@ -41,8 +41,7 @@ public class FloodIoMvn extends Simulation {
                             .exec(Step5GET)
                             .exec(Step5POST)
                             .randomSwitch()
-                            .on(Choice.withWeight(60.0, FinalStep), Choice.withWeight(40.0, failedFinalStep))
-                            .exitHereIfFailed());
+                            .on(Choice.withWeight(60.0, FinalStep), Choice.withWeight(40.0, failedFinalStep)));
 
 
     {
